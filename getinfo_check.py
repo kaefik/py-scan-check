@@ -6,7 +6,7 @@ curl -H 'Authorization: Basic Kzc5MjcyNDA5MDIyOjMwMjA5Ng=='
 -H 'ClientVersion: 1.4.2' 
 -H 'Host: proverkacheka.nalog.ru:8888' 
 -H 'User-Agent: okhttp/3.0.1' 
---compressed 'http://proverkacheka.nalog.ru:8888/v1/inns/*/kkts/*/fss/8710000100730663/tickets/2860?fiscalSign=4249261172&sendToEmail=no'
+--compressed 'http://proverkacheka.nalog.ru:8888/v1/inns/*/kkts/*/fss/XXXXXXXXXXXXXXXX/tickets/YYYYY?fiscalSign=ZZZZZZZZZZ&sendToEmail=no'
 
 XXXXXXXXXXXXXXXX - номер фискального накопителя (ФН)
 YYYYY - фискальные данные(ФД)
@@ -19,13 +19,10 @@ import base64
 import click
 from  config import Config
 
-# python3 scan.py 8710000100730663 2860 4249261172
 
-@click.command()
-@click.argument('fn')
-@click.argument('fd')
-@click.argument('fpd')
-def main(fn, fd, fpd):
+# python3 getinfo_check.py 8710000100730663 2860 4249261172
+
+def getinfo_fns(fn, fd, fpd):
     cfg = Config()
     strs = "{0}:{1}".format(cfg.username, cfg.code)
     # print(strs)
@@ -47,8 +44,19 @@ def main(fn, fd, fpd):
     header_session = {'Authorization': str_encoded_authorization, 'User-Agent': 'okhttp/3.0.1', 'Device-Id': 'android_id', 'Device-OS': 'Adnroid 6.0.1', 'Version': '2', 'ClientVersion': '1.4.2', 'Host': 'proverkacheka.nalog.ru:8888' }
 
     r = requests.get(url, headers=header_session) 
+    if r is None:
+        return None  
 
-    print(r)
-    print(r.json())
+    return r
+
+@click.command()
+@click.argument('fn')
+@click.argument('fd')
+@click.argument('fpd')
+def main(fn, fd, fpd):
+    print(getinfo_fns(fn, fd, fpd).json())
+
+
 if __name__=="__main__":
     main()
+    #print(get_info_zxing_qrscanner("qrcode.jpg"))
