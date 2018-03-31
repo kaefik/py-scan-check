@@ -7,6 +7,7 @@ import io
 import time
 
 from py_scan_check_fns import py_scan_check
+from getinfo_check import getinfo_fns
 
 ABOUT = range(1)
 
@@ -33,8 +34,10 @@ class iTelegramBot:
             level=level_loggining)
         self.bot = Updater(token)
         # обработка документов
-        handlerDocument = MessageHandler(filters = Filters.photo, callback=self.get_photo)
-        self.bot.dispatcher.add_handler(handlerDocument)
+        handlerPhoto = MessageHandler(filters = Filters.photo, callback=self.get_photo)
+        self.bot.dispatcher.add_handler(handlerPhoto)
+        handlerText = MessageHandler(filters = Filters.text, callback=self.get_text)
+        self.bot.dispatcher.add_handler(handlerText)
         
         # регистрация обработчика для inline клавиатуры
         self.bot.dispatcher.add_handler(CallbackQueryHandler(self.inlinebutton))   
@@ -56,7 +59,19 @@ class iTelegramBot:
         result = py_scan_check(path_check_full)
         update.message.reply_text(result.json())
 
-
+    # получение текста и попытка его обработки для получения данных с серверов фнс
+    def get_text(self,bot,update):
+        text = update.message.text
+        text_split = text.split(" ")
+        if len(text_split)<3:
+            update.message.reply_text("Неверные входные данные. Поробуйте снова: ФН ФД ФП")    
+        else:
+            result = getinfo_fns(text_split[0], text_split[1], text_split[2])
+            if result.status_code != 200:
+                res = "Неверные входные данные или проблема в соединении с серверами ФНС."
+            else:
+                res = result.json()
+            update.message.reply_text(res)
 
     def reg_handler(self, command=None,hand=None):
         """ регистрация команд которые обрабатывает бот """
