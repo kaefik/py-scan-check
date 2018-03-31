@@ -16,3 +16,4 @@ class Config:
         config.read(self.namefile_cfg)
         self.username = str(config['AUTORIZATION']['username'])
         self.code = str(config['AUTORIZATION']['code'])
+        self.token = str(config['BOT']['token'])

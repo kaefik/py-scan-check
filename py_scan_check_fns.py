@@ -28,9 +28,13 @@ def py_scan_check(filename):
     result = None
     # распознавание qr кода чека
     info = get_info_zxing_qrscanner(filename)
-    #print(info)
-    result_parse = parse_result_scan_qrcode(info)
+    print("Данные после распознования: ", info)
 
+    try:
+        result_parse = parse_result_scan_qrcode(info)
+    except IndexError:
+        return None
+    
     # print("Номер фискального накопителя (ФН) = ", result_parse['fn'])
     # print("Фискальные данные(ФД) = ", result_parse['fd'])
     # print("фискальный признак документа(ФПД) = ", result_parse['fpd'])
@@ -42,8 +46,9 @@ def py_scan_check(filename):
 if __name__ == "__main__":
     path_test = "data_check_test/"
     filen = path_test+"qrcode.jpg"
+    filen1 = "data_check/1.jpg"
 
-    r = py_scan_check(filen)
+    r = py_scan_check(filen1)
     print(r.status_code)
     print(r.json())
     
