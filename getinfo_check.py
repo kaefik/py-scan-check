@@ -19,13 +19,18 @@ import base64
 import click
 from  config import Config
 
-
-# python3 getinfo_check.py 8710000100730663 2860 4249261172
+"""
+пример использования:
+    python3 getinfo_check.py 8710000100730663 2860 4249261172
+"""
 
 def getinfo_fns(fn, fd, fpd):
+    """
+        получение данных из ФНС информации используя данные с чека ФН, ФПД, ФД
+    """
     cfg = Config()
     strs = "{0}:{1}".format(cfg.username, cfg.code)
-    # print(strs)
+    print(strs)
     encoded_authorization = base64.b64encode(strs.encode())
     str_encoded_authorization = "Basic {0}".format(encoded_authorization.decode("utf-8"))
 
@@ -44,6 +49,7 @@ def getinfo_fns(fn, fd, fpd):
     header_session = {'Authorization': str_encoded_authorization, 'User-Agent': 'okhttp/3.0.1', 'Device-Id': 'android_id', 'Device-OS': 'Adnroid 6.0.1', 'Version': '2', 'ClientVersion': '1.4.2', 'Host': 'proverkacheka.nalog.ru:8888' }
 
     r = requests.get(url, headers=header_session) 
+
     if r is None:
         return None  
 
@@ -54,9 +60,12 @@ def getinfo_fns(fn, fd, fpd):
 @click.argument('fd')
 @click.argument('fpd')
 def main(fn, fd, fpd):
-    print(getinfo_fns(fn, fd, fpd).json())
-
+    r = getinfo_fns(fn, fd, fpd)
+    if r.status_code == 200:
+        print("Информация получена: {}".format(r.json()))
+    else:
+        print("Код ответа от сервера ФНС: {}".format(r.status_code))
 
 if __name__=="__main__":
     main()
-    #print(get_info_zxing_qrscanner("qrcode.jpg"))
+    

@@ -1,5 +1,7 @@
 import requests
 
+path_test = "data_check_test/"
+
 def qrcode_scanner(url, filename):
     """
         отправляет запрос в онлайн сканер qr кодов и получает ответ от сервера (Отправка файла через Request Payload)
@@ -32,4 +34,4 @@ def get_info_zxing_qrscanner(filen):
     return s
 
 if __name__ == "__main__":
-    print(get_info_zxing_qrscanner("qrcode.jpg"))
+    print(get_info_zxing_qrscanner(path_test + "qrcode.jpg"))

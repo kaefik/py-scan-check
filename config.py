@@ -11,7 +11,7 @@ class Config:
         self.username=None
         self.code=None
         if not os.path.exists(self.namefile_cfg):
-            return
+            raise FileExistsError("Не найден файл конфигурации {}.\nСоздайте config.ini из файла config.ini.sample.".format(namefile_cfg))
         config = configparser.ConfigParser()
         config.read(self.namefile_cfg)
         self.username = str(config['AUTORIZATION']['username'])
